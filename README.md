@@ -133,35 +133,49 @@ $$
 
 ### Ephemeris Extraction and Orbital Mechanics
 
-Ephemeris parameters decoded from subframes 1, 2, and 3 define the satellite's osculating Keplerian ellipse:
+Ephemeris parameters decoded from subframes 1, 2, and 3 define the satellite's osculating Keplerian orbit per IS-GPS-200D:
 
-1. **Mean Motion and Anomaly:**
-   $$n_0 = \sqrt{\frac{\mu_e}{a^3}}, \quad n = n_0 + \Delta n, \quad M_k = M_0 + n (t - t_{oe})$$
+1. **Mean Motion and Anomaly:** Computes the computed mean motion $n_0 = \sqrt{\mu_e / a^3}$, applies the delta correction $n = n_0 + \Delta n$, and evaluates the mean anomaly at time $t$:
 
-2. **Kepler's Equation for Eccentric Anomaly ($E_k$):**
-   $$M_k = E_k - e \sin E_k$$
-   Solved iteratively via fixed-point iteration until convergence ($|E_k^{(m+1)} - E_k^{(m)}| < 10^{-14}$).
+$$
+M_k = M_0 + n (t - t_{oe})
+$$
 
-3. **True Anomaly ($\nu_k$) and Argument of Latitude ($\Phi_k$):**
-   $$\nu_k = \operatorname{atan2}\left(\sqrt{1 - e^2} \sin E_k, \, \cos E_k - e\right), \quad \Phi_k = \nu_k + \omega$$
+2. **Kepler's Equation for Eccentric Anomaly ($E_k$):** Solves the transcendental Kepler equation via iterative fixed-point iteration until convergence ($|E_k^{(m+1)} - E_k^{(m)}| < 10^{-14}$):
 
-4. **Second Harmonic Perturbation Corrections:**
-   $$\delta u_k = C_{us} \sin 2\Phi_k + C_{uc} \cos 2\Phi_k$$
-   $$\delta r_k = C_{rs} \sin 2\Phi_k + C_{rc} \cos 2\Phi_k$$
-   $$\delta i_k = C_{is} \sin 2\Phi_k + C_{ic} \cos 2\Phi_k$$
+$$
+M_k = E_k - e \sin E_k
+$$
+
+3. **True Anomaly ($\nu_k$) and Argument of Latitude ($\Phi_k$):** Evaluates true anomaly from eccentric anomaly and calculates the orbital argument of latitude:
+
+$$
+\Phi_k = \nu_k + \omega
+$$
+
+4. **Harmonic Perturbation Corrections:** Evaluates 2nd harmonic cosine and sine corrections for argument of latitude ($\delta u_k$), orbit radius ($\delta r_k$), and inclination angle ($\delta i_k$).
 
 ---
 
 ### Relativistic and Sagnac Corrections
 
-- **Relativistic Eccentricity Drift:** Orbit eccentricity induces gravitational time dilation:
-  $$\Delta t_{\mathrm{rel}} = F \cdot e \cdot \sqrt{a} \sin E_k, \quad \text{where } F = -\frac{2\sqrt{\mu_e}}{c^2}$$
+- **Relativistic Clock Drift:** Corrects for gravitational time dilation caused by orbital eccentricity:
 
-- **Satellite Clock Bias:**
-  $$\Delta t_{\mathrm{sv}} = a_{f0} + a_{f1}(t - t_{oc}) + a_{f2}(t - t_{oc})^2 + \Delta t_{\mathrm{rel}} - T_{\mathrm{GD}}$$
+$$
+\Delta t_{\mathrm{rel}} = F \cdot e \cdot \sqrt{a} \sin E_k, \quad F = -\frac{2\sqrt{\mu_e}}{c^2}
+$$
 
-- **Sagnac Effect (Earth Rotation Compensation):** During signal transit time $\Delta t_{\mathrm{transit}} = \rho_c / c$, Earth rotates by $\dot{\Omega}_e \Delta t_{\mathrm{transit}}$, requiring coordinate rotation around the Z-axis:
-  $$\mathbf{x}_{\mathrm{sat}}(t_{\mathrm{tr}}) = \mathbf{R}_z\left(\dot{\Omega}_e \frac{\rho_c}{c}\right) \mathbf{x}_{\mathrm{sat}}(t_{\mathrm{tx}})$$
+- **Satellite Clock Bias:** Evaluates the 2nd-order polynomial clock model including group delay differential $T_{\mathrm{GD}}$:
+
+$$
+\Delta t_{\mathrm{sv}} = a_{f0} + a_{f1}(t - t_{oc}) + a_{f2}(t - t_{oc})^2 + \Delta t_{\mathrm{rel}} - T_{\mathrm{GD}}
+$$
+
+- **Sagnac Earth Rotation Compensation:** Corrects satellite ECEF coordinates for Earth rotation during signal transit time $\Delta t_{\mathrm{transit}} = \rho_c / c$:
+
+$$
+\mathbf{x}_{\mathrm{sat}}(t_{\mathrm{tr}}) = \mathbf{R}_z\left(\dot{\Omega}_e \frac{\rho_c}{c}\right) \mathbf{x}_{\mathrm{sat}}(t_{\mathrm{tx}})
+$$
 
 ---
 
