@@ -107,6 +107,12 @@ $$
 
 The receiver evaluates a Doppler search space $[-10\text{ kHz}, +10\text{ kHz}]$ with a coarse grid of $500\text{ Hz}$ across all 32 satellites. The Doppler estimate is then refined using a 3-point parabolic polynomial fit over a 10-epoch coherent window.
 
+<p align="center">
+  <img src="docs/figures/gps_acquisition_2d_correlation.png" alt="GPS 2D Acquisition and Correlation Surface" width="750"/>
+  <br/>
+  <em>Figure: 2D parallel acquisition search surface (top), cross-correlation profile showing delay peak at $\tau = 890$ samples (bottom left), and 1023-chip Gold code autocorrelation properties (bottom right).</em>
+</p>
+
 ---
 
 ### Code and Carrier Tracking Loops
@@ -115,6 +121,12 @@ Navigation data bits span 20 consecutive C/A code periods ($20\text{ ms}$). To a
 1. **Bit Transition Edge Detection:** Computes consecutive C/A correlation inner products and detects phase transitions of $\pi$ radians ($|\Delta \phi| > 3\pi / 4$).
 2. **Delay Tracking (DLL):** Dynamically adjusts the sampling offset $\tau$ within $\pm 2$ samples of the peak correlation.
 3. **Doppler Tracking (FLL/PLL):** Continuously tracks oscillator drift by fitting a second-degree polynomial to candidate Doppler shifts ($f_d \pm 20\text{ Hz}$) and updating the carrier frequency.
+
+<p align="center">
+  <img src="docs/figures/gps_doppler_fft_spectrum.png" alt="Doppler Estimation and Baseband FFT Spectrum" width="750"/>
+  <br/>
+  <em>Figure: 3-point parabolic Doppler peak fitting ($f_d = -2730.0\text{ Hz}$) (left) and baseband Power Spectral Density (PSD / FFT) before and after Doppler carrier removal (right).</em>
+</p>
 
 ---
 
@@ -270,8 +282,10 @@ The receiver was evaluated against real RF baseband samples recorded at the **EP
 │   └── correct_sats.mat           # Validated satellite subset for positioning
 │
 └── docs/                          # Academic documentation & reference materials
-    ├── figures/                   # High-resolution positioning and constellation plots
-    │   └── epfl_wgs84_positioning_result.png
+    ├── figures/                   # High-resolution positioning, correlation, and spectrum plots
+    │   ├── epfl_wgs84_positioning_result.png
+    │   ├── gps_acquisition_2d_correlation.png
+    │   └── gps_doppler_fft_spectrum.png
     ├── notes/                     # Handwritten lecture notes
     │   ├── 3EphemeridesAndPseudoranges-part1-2024.pdf
     │   └── 3EphemeridesAndPseudoranges-part2-2024.pdf
