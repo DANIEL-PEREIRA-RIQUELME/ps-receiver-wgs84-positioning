@@ -201,6 +201,12 @@ The resulting Cartesian coordinates $(x_r, y_r, z_r)$ are converted to geodetic 
 
 The receiver was evaluated against real RF baseband samples recorded at the **EPFL Campus in Lausanne, Switzerland**:
 
+<p align="center">
+  <img src="docs/figures/epfl_wgs84_positioning_result.png" alt="EPFL Campus WGS-84 Positioning Result" width="620"/>
+  <br/>
+  <em>Figure: Calculated receiver position centered on the EPFL campus (Lausanne, Switzerland) on Google Maps.</em>
+</p>
+
 ```text
 ======================================================================
   NAVIGATION & POSITIONING SOLUTION
@@ -264,6 +270,8 @@ The receiver was evaluated against real RF baseband samples recorded at the **EP
 │   └── correct_sats.mat           # Validated satellite subset for positioning
 │
 └── docs/                          # Academic documentation & reference materials
+    ├── figures/                   # High-resolution positioning and constellation plots
+    │   └── epfl_wgs84_positioning_result.png
     ├── notes/                     # Handwritten lecture notes
     │   ├── 3EphemeridesAndPseudoranges-part1-2024.pdf
     │   └── 3EphemeridesAndPseudoranges-part2-2024.pdf
