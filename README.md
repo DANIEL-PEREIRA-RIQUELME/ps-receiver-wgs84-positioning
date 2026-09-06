@@ -8,7 +8,7 @@
 
 An autonomous **GPS L1 C/A Software-Defined Radio (SDR) receiver, navigation message decoder, and 3D positioning engine** implemented in Python. Developed at **École Polytechnique Fédérale de Lausanne (EPFL)** as part of the *COM-430: Modern digital communications: a hands-on approach* curriculum (Instructor: Dr. Nicolae Chiurtu).
 
-The receiver processes raw baseband I/Q antenna samples captured from a USRP SDR front-end at $L1 = 1575.42\text{ MHz}$ ($f_s = 4.092\text{ MHz}$), executing the complete signal processing chain from satellite acquisition to sub-meter WGS-84 geodetic multilateration.
+The receiver processes raw baseband I/Q antenna samples captured from a USRP SDR front-end at $f_{\mathrm{L1}} = 1575.42\text{ MHz}$ ($f_s = 4.092\text{ MHz}$), executing the complete signal processing chain from satellite acquisition to sub-meter WGS-84 geodetic multilateration.
 
 ---
 
@@ -34,12 +34,12 @@ The receiver processes raw baseband I/Q antenna samples captured from a USRP SDR
 
 ## System Overview
 
-Global Positioning System (GPS) space vehicles broadcast direct-sequence spread spectrum (DSSS) signals in the L-band. At the receiver, signal power is typically below the thermal noise floor ($-130\text{ dBm}$ to $-160\text{ dBm}$), requiring high-gain coherent correlation and precise Doppler compensation.
+Global Positioning System (GPS) space vehicles broadcast direct-sequence spread spectrum (DSSS) signals in the L-band. At the receiver, signal power is typically below the thermal noise floor (-130 dBm to -160 dBm), requiring high-gain coherent correlation and precise Doppler compensation.
 
 This software receiver implements an end-to-end processing pipeline:
-- **Satellite Acquisition:** Fast Fourier Transform (FFT) circular cross-correlation across all 32 PRN Gold codes over a 2D grid ($\pm 10\text{ kHz}$ Doppler, 4092-sample code phase).
+- **Satellite Acquisition:** Fast Fourier Transform (FFT) circular cross-correlation across all 32 PRN Gold codes over a 2D grid (±10 kHz Doppler, 4092-sample code phase).
 - **Signal Tracking:** Parabolic Doppler refinement, bit transition edge detection, and coherent 20-period matched filter accumulation.
-- **Telemetry Processing:** Frame synchronization using the 8-bit preamble ($0x8B$), BPSK sign ambiguity inversion, and extended Hamming $(32, 26)$ parity checking with word-to-word carry bits ($D_{29}^*, D_{30}^*$).
+- **Telemetry Processing:** Frame synchronization using the 8-bit preamble (`0x8B`), BPSK sign ambiguity inversion, and extended Hamming (32, 26) parity checking with word-to-word carry bits ($D_{29}^\ast, D_{30}^\ast$).
 - **Orbital Mechanics:** Ephemeris parameter extraction, iterative solution of Kepler's equation for eccentric anomaly $E_k$, satellite clock polynomial evaluation, and relativistic drift correction.
 - **Geodetic Positioning:** Earth rotation compensation (Sagnac effect), multi-satellite non-linear Gauss-Newton multilateration, and conversion to WGS-84 coordinates (Latitude, Longitude, Altitude).
 
@@ -49,20 +49,20 @@ This software receiver implements an end-to-end processing pipeline:
 
 | Parameter | Symbol / Variable | Value | Description |
 | :--- | :--- | :--- | :--- |
-| Carrier Frequency | $f_{\mathrm{L1}}$ | $1575.42\text{ MHz}$ | GPS L1 carrier frequency ($154 \times 10.23\text{ MHz}$) |
-| Sampling Rate | $f_s$ | $4.092\text{ MHz}$ | Receiver ADC baseband sampling frequency |
-| Sampling Period | $T_s$ | $244.38\text{ ns}$ | $T_s = 1 / f_s$ |
-| Chip Rate | $f_{\mathrm{chip}}$ | $1.023\text{ Mchips/s}$ | C/A Gold code chipping rate |
-| Samples per Chip | $N_{\mathrm{spch}}$ | $4\text{ samples}$ | Oversampling ratio ($f_s / f_{\mathrm{chip}}$) |
-| C/A Code Length | $N_{\mathrm{code}}$ | $1023\text{ chips}$ | Period of one Gold code repetition ($1.0\text{ ms}$) |
-| Samples per C/A Period | $N_{\mathrm{spc}}$ | $4092\text{ samples}$ | Samples per 1 ms code epoch |
-| Codes per Navigation Bit | $N_{\mathrm{cpb}}$ | $20\text{ codes}$ | DSSS spreading factor per bit ($20\text{ ms}$) |
-| Navigation Bit Rate | $R_{\mathrm{bit}}$ | $50\text{ bps}$ | GPS broadcast navigation message rate |
-| Subframe Duration | $T_{\mathrm{subframe}}$ | $6.0\text{ s}$ | $300\text{ bits}$ per telemetry subframe |
-| Page / Frame Duration | $T_{\mathrm{frame}}$ | $30.0\text{ s}$ | $5\text{ subframes} = 1500\text{ bits}$ |
-| Speed of Light | $c$ | $299,792,458\text{ m/s}$ | Vacuum propagation speed |
-| Earth Gravitational Parameter | $\mu_e$ | $3.986005 \times 10^{14}\text{ m}^3/\text{s}^2$ | WGS-84 geocentric gravitational constant |
-| Earth Angular Velocity | $\dot{\Omega}_e$ | $7.2921151467 \times 10^{-5}\text{ rad/s}$ | WGS-84 Earth rotation rate |
+| Carrier Frequency | $f_{\mathrm{L1}}$ | 1575.42 MHz | GPS L1 carrier frequency (154 × 10.23 MHz) |
+| Sampling Rate | $f_s$ | 4.092 MHz | Receiver ADC baseband sampling frequency |
+| Sampling Period | $T_s$ | 244.38 ns | $T_s = 1 / f_s$ |
+| Chip Rate | $f_{\mathrm{chip}}$ | 1.023 Mchips/s | C/A Gold code chipping rate |
+| Samples per Chip | $N_{\mathrm{spch}}$ | 4 samples | Oversampling ratio ($f_s / f_{\mathrm{chip}}$) |
+| C/A Code Length | $N_{\mathrm{code}}$ | 1023 chips | Period of one Gold code repetition (1.0 ms) |
+| Samples per C/A Period | $N_{\mathrm{spc}}$ | 4092 samples | Samples per 1 ms code epoch |
+| Codes per Navigation Bit | $N_{\mathrm{cpb}}$ | 20 codes | DSSS spreading factor per bit (20 ms) |
+| Navigation Bit Rate | $R_{\mathrm{bit}}$ | 50 bps | GPS broadcast navigation message rate |
+| Subframe Duration | $T_{\mathrm{subframe}}$ | 6.0 s | 300 bits per telemetry subframe |
+| Page / Frame Duration | $T_{\mathrm{frame}}$ | 30.0 s | 5 subframes = 1500 bits |
+| Speed of Light | $c$ | 299,792,458 m/s | Vacuum propagation speed |
+| Earth Gravitational Parameter | $\mu_e$ | 3.986005 × 10¹⁴ m³/s² | WGS-84 geocentric gravitational constant |
+| Earth Angular Velocity | $\dot{\Omega}_e$ | 7.2921151467 × 10⁻⁵ rad/s | WGS-84 Earth rotation rate |
 
 ---
 
@@ -103,10 +103,10 @@ flowchart TD
 Satellite visibility is established via two-dimensional cross-correlation between the incoming baseband stream $y[n]$ and the PRN Gold code sequence $p[n]$:
 
 $$
-R(\tau, f_d) = \left| \sum_{n=0}^{N-1} y[n] \, e^{-j 2\pi f_d n T_s} \, p^*[n - \tau] \right|
+R(\tau, f_d) = \left| \sum_{n=0}^{N-1} y[n] \, e^{-j 2\pi f_d n T_s} \, p^\ast[n - \tau] \right|
 $$
 
-The receiver evaluates a Doppler search space $[-10\text{ kHz}, +10\text{ kHz}]$ with a coarse grid of $500\text{ Hz}$ across all 32 satellites. The Doppler estimate is then refined using a 3-point parabolic polynomial fit over a 10-epoch coherent window.
+The receiver evaluates a Doppler search space of [-10 kHz, +10 kHz] with a coarse grid of 500 Hz across all 32 satellites. The Doppler estimate is then refined using a 3-point parabolic polynomial fit over a 10-epoch coherent window.
 
 <p align="center">
   <img src="docs/figures/gps_autocorrelation_plot.png" alt="GPS C/A Code Autocorrelation and Cross-Correlation" width="620"/>
@@ -118,8 +118,8 @@ The receiver evaluates a Doppler search space $[-10\text{ kHz}, +10\text{ kHz}]$
 
 ### Code and Carrier Tracking Loops
 
-Navigation data bits span 20 consecutive C/A code periods ($20\text{ ms}$). To achieve synchronization:
-1. **Bit Transition Edge Detection:** Computes consecutive C/A correlation inner products and detects phase transitions of $\pi$ radians ($|\Delta \phi| > 3\pi / 4$).
+Navigation data bits span 20 consecutive C/A code periods (20 ms). To achieve synchronization:
+1. **Bit Transition Edge Detection:** Computes consecutive C/A correlation inner products and detects phase transitions of $\pi$ radians ($|\Delta \phi| \gt 3\pi / 4$).
 2. **Delay Tracking (DLL):** Dynamically adjusts the sampling offset $\tau$ within $\pm 2$ samples of the peak correlation.
 3. **Doppler Tracking (FLL/PLL):** Continuously tracks oscillator drift by fitting a second-degree polynomial to candidate Doppler shifts ($f_d \pm 20\text{ Hz}$) and updating the carrier frequency.
 
@@ -136,11 +136,11 @@ Navigation data bits span 20 consecutive C/A code periods ($20\text{ ms}$). To a
 Each 300-bit subframe begins with an 8-bit Telemetry (TLM) preamble pattern:
 
 $$
-\mathbf{P}_{\mathrm{preamble}} = [1, 0, 0, 0, 1, 0, 1, 1] \quad (0\text{x8B})
+\mathbf{P}_{\mathrm{preamble}} = [1, 0, 0, 0, 1, 0, 1, 1] \quad \text{(0x8B)}
 $$
 
 - **Sign Ambiguity Resolution:** If the correlation peak is negative, all bits in the stream are inverted.
-- **Extended Hamming Parity:** Each 30-bit word contains 24 data bits ($d_1, \dots, d_{24}$) and 6 parity bits ($D_{25}, \dots, D_{30}$) computed via parity matrix $\mathbf{H}_{26 \times 6}$ conditioned on the preceding word's last two bits ($D_{29}^*, D_{30}^*$).
+- **Extended Hamming Parity:** Each 30-bit word contains 24 data bits ($d_1, \dots, d_{24}$) and 6 parity bits ($D_{25}, \dots, D_{30}$) computed via parity matrix $\mathbf{H}_{26 \times 6}$ conditioned on the preceding word's last two bits ($D_{29}^\ast, D_{30}^\ast$).
 
 ---
 
@@ -154,7 +154,7 @@ $$
 M_k = M_0 + n (t - t_{oe})
 $$
 
-2. **Kepler's Equation for Eccentric Anomaly ($E_k$):** Solves the transcendental Kepler equation via iterative fixed-point iteration until convergence ($|E_k^{(m+1)} - E_k^{(m)}| < 10^{-14}$):
+2. **Kepler's Equation for Eccentric Anomaly ($E_k$):** Solves the transcendental Kepler equation via iterative fixed-point iteration until convergence ($|E_k^{(m+1)} - E_k^{(m)}| \lt 10^{-14}$):
 
 $$
 M_k = E_k - e \sin E_k
@@ -203,7 +203,7 @@ $$
 The system is linearized and solved iteratively via Moore-Penrose pseudo-inverse:
 
 $$
-\begin{bmatrix} \mathbf{x}_r^{(n+1)} \\ b^{(n+1)} \end{bmatrix} = \begin{bmatrix} \mathbf{x}_r^{(n)} \\ b^{(n)} \end{bmatrix} - \mathbf{J}^{\dagger} \mathbf{f}(\mathbf{x}_r^{(n)}, b^{(n)})
+\begin{bmatrix} \mathbf{x}_r^{(n+1)} \\\\ b^{(n+1)} \end{bmatrix} = \begin{bmatrix} \mathbf{x}_r^{(n)} \\\\ b^{(n)} \end{bmatrix} - \mathbf{J}^{\dagger} \mathbf{f}(\mathbf{x}_r^{(n)}, b^{(n)})
 $$
 
 The resulting Cartesian coordinates $(x_r, y_r, z_r)$ are converted to geodetic coordinates on the **WGS-84 reference ellipsoid** (semi-major axis $a = 6378137.0\text{ m}$, flattening $f = 1/298.257223563$).
@@ -244,12 +244,12 @@ The receiver was evaluated against real RF baseband samples recorded at the **EP
 
 | Satellite PRN | Coarse Doppler ($f_d$) | Fine Doppler ($f_d$) | Code Phase ($\tau$) | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| **PRN 29** | $-2800\text{ Hz}$ | $-2730.00\text{ Hz}$ | $890\text{ samples}$ | Acquired & Decoded (Parity OK) |
-| **PRN 04** | $+800\text{ Hz}$ | $+810.00\text{ Hz}$ | $4001\text{ samples}$ | Acquired & Decoded (Parity OK) |
-| **PRN 26** | $+1700\text{ Hz}$ | $+1730.00\text{ Hz}$ | $280\text{ samples}$ | Acquired & Decoded (Parity OK) |
-| **PRN 21** | $+1300\text{ Hz}$ | $+1190.00\text{ Hz}$ | $3346\text{ samples}$ | Acquired & Decoded (Parity OK) |
-| **PRN 25** | $-3600\text{ Hz}$ | $-3600.00\text{ Hz}$ | $3536\text{ samples}$ | Acquired & Decoded (Parity OK) |
-| **PRN 31** | $-1800\text{ Hz}$ | $-1800.00\text{ Hz}$ | $3082\text{ samples}$ | Acquired & Decoded (Parity OK) |
+| **PRN 29** | -2800 Hz | -2730.00 Hz | 890 samples | Acquired & Decoded (Parity OK) |
+| **PRN 04** | +800 Hz | +810.00 Hz | 4001 samples | Acquired & Decoded (Parity OK) |
+| **PRN 26** | +1700 Hz | +1730.00 Hz | 280 samples | Acquired & Decoded (Parity OK) |
+| **PRN 21** | +1300 Hz | +1190.00 Hz | 3346 samples | Acquired & Decoded (Parity OK) |
+| **PRN 25** | -3600 Hz | -3600.00 Hz | 3536 samples | Acquired & Decoded (Parity OK) |
+| **PRN 31** | -1800 Hz | -1800.00 Hz | 3082 samples | Acquired & Decoded (Parity OK) |
 
 ---
 
