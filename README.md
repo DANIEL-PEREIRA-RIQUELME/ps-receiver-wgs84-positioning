@@ -4,9 +4,9 @@
 [![Standard](https://img.shields.io/badge/Standard-IS--GPS--200D-informational.svg)](docs/specifications/IS-GPS-200D.pdf)
 [![Signal Processing](https://img.shields.io/badge/DSP-SDR%20%7C%20Gold%20Codes%20%7C%20Doppler-28A745.svg)]()
 [![Positioning](https://img.shields.io/badge/Geodesy-WGS--84%20%7C%20Gauss--Newton-D95319.svg)]()
-[![Institution](https://img.shields.io/badge/EPFL-EE--442%20Wireless%20Receivers-B51F1F.svg)](https://www.epfl.ch)
+[![Institution](https://img.shields.io/badge/EPFL-COM--430%20Modern%20Digital%20Communications-B51F1F.svg)](https://go.epfl.ch/COM-430)
 
-An autonomous **GPS L1 C/A Software-Defined Radio (SDR) receiver, navigation message decoder, and 3D positioning engine** implemented in Python. Developed at the **Telecommunications Circuits Laboratory (TCL), École Polytechnique Fédérale de Lausanne (EPFL)** as part of the *EE-442: Wireless Receivers — Algorithms and Architectures* curriculum.
+An autonomous **GPS L1 C/A Software-Defined Radio (SDR) receiver, navigation message decoder, and 3D positioning engine** implemented in Python. Developed at **École Polytechnique Fédérale de Lausanne (EPFL)** as part of the *COM-430: Modern digital communications: a hands-on approach* curriculum (Instructor: Dr. Nicolae Chiurtu).
 
 The receiver processes raw baseband I/Q antenna samples captured from a USRP SDR front-end at $L1 = 1575.42\text{ MHz}$ ($f_s = 4.092\text{ MHz}$), executing the complete signal processing chain from satellite acquisition to sub-meter WGS-84 geodetic multilateration.
 
@@ -27,7 +27,8 @@ The receiver processes raw baseband I/Q antenna samples captured from a USRP SDR
 6. [Repository Structure](#repository-structure)
 7. [Getting Started](#getting-started)
 8. [Documentation and Course Materials](#documentation-and-course-materials)
-9. [Authors and Acknowledgments](#authors-and-acknowledgments)
+9. [Academic Context: COM-430](#academic-context-com-430)
+10. [Authors and Acknowledgments](#authors-and-acknowledgments)
 
 ---
 
@@ -359,9 +360,78 @@ All theoretical foundations, derivations, and specifications are organized in `d
 
 ---
 
+## Academic Context: COM-430
+
+This project was developed within the official curriculum of the master's course **COM-430: Modern digital communications: a hands-on approach** at **École Polytechnique Fédérale de Lausanne (EPFL)**, taught by **Dr. Nicolae Chiurtu**.
+
+### Course Specifications (EPFL Course Booklet)
+
+| Attribute | Specification |
+| :--- | :--- |
+| **Course Code** | **COM-430** |
+| **Course Title** | *Modern digital communications: a hands-on approach* |
+| **Instructor** | Dr. Nicolae Chiurtu |
+| **Institution** | École Polytechnique Fédérale de Lausanne (EPFL) |
+| **Language of Teaching** | English |
+| **Credits** | 8 ECTS |
+| **Semester / Session** | Fall / Winter |
+| **Workload** | 240 hours total (14 weeks: 4 hours weekly — 2h Lecture, 2h Lab) |
+| **Exam** | During the semester (Written and practical midterm & final exam) |
+| **Grading Scheme** | 40% Midterm exam, 60% Final exam |
+| **Teaching Methods** | *Ex cathedra* lectures and small projects |
+| **Expected Activities** | Follow lectures; guided as well as independent work on projects |
+| **Resources** | Lecture notes / Handbook |
+| **Moodle Portal** | [https://go.epfl.ch/COM-430](https://go.epfl.ch/COM-430) |
+| **Remark** | *This course will be last given in fall 2025.* |
+
+### Target Cursus & Study Programs
+
+| Study Program | Semester | Type |
+| :--- | :--- | :--- |
+| **Communication Systems Minor** | H | Optional (Opt.) |
+| **Computer Science** | MA1, MA3 | Mandatory (Obl.) |
+| **Cybersecurity** | MA1, MA3 | Optional (Opt.) |
+| **SC Master EPFL** | MA1, MA3 | Mandatory (Obl.) |
+
+### Summary
+This course complements the theoretical knowledge learned in Principles of Digital Communications (PDC) with more advanced topics such as OFDM, MIMO, fading channels, and GPS positioning. This knowledge is put into practice with hands-on exercises based on MATLAB or Python (at choice) and on a software-defined radio platform.
+
+### Syllabus & Course Content
+1. **Software Radio:** Key concepts.
+2. **Signal Processing Chain:** MATLAB/Python implementation of the signal processing chain to the level of detail taught in *Principles of Digital Communications* (PDC: COM-302).
+3. **Channel Modeling:** Estimation and equalization.
+4. **Wireless SDR Testbed:** Implementation of a basic wireless communication system using a software-defined radio testbed.
+5. **Fading and Diversity:** Multipath propagation, Rayleigh fading, and diversity techniques.
+6. **OFDM and MIMO:** Theory and implementation.
+7. **CDMA in GPS:** CDMA in the context of a GPS system.
+8. **GPS Signal Decoding & Positioning:** Decoding of a GPS signal and positioning.
+
+- **Keywords:** Wireless, OFDM, Diversity, Coding, GPS, CDMA, MMSE, Rayleigh fading, software-defined radio, channel estimation.
+
+### Learning Prerequisites
+- **Required Courses:** COM-302 Principles of Digital Communications (PDC) or equivalent.
+- **Important Concepts:** Solid understanding of linear algebra and probability as well as real and complex analysis.
+
+### Learning Outcomes
+By the end of the course, the student must be able to:
+- Design and implement an advanced digital communication system (data rate, spectral bandwidth, energy requirements, error probability, implementation complexity).
+- Model physical properties of wired and wireless communication channels.
+- Implement various parts of a "physical-layer" digital communication system.
+- Understand what software-defined radio is all about.
+
+### Teaching & Assessment Methods
+- **Teaching Methods:** *Ex cathedra* lectures and small projects.
+- **Expected Student Activities:** Follow lectures; guided as well as independent work on projects.
+- **Assessment Methods:** Written and practical midterm and final exam during the semester (40% midterm exam, 60% final exam).
+- **Resources:** Notes/Handbook: Lecture notes. Moodle link: [https://go.epfl.ch/COM-430](https://go.epfl.ch/COM-430).
+
+---
+
 ## Authors and Acknowledgments
 
-- **Daniel Pereira Riquelme**
+- **Daniel Pereira Riquelme** — *Implementation, DSP Algorithms & System Architecture*
 
-**Supervision:** Telecommunications Circuits Laboratory (TCL), **École Polytechnique Fédérale de Lausanne (EPFL)**.  
-**Course:** *EE-442 Wireless Receivers: Algorithms and Architectures*.
+**Course:** *COM-430: Modern digital communications: a hands-on approach*  
+**Instructor:** Dr. Nicolae Chiurtu  
+**Institution:** School of Computer and Communication Sciences (IC), **École Polytechnique Fédérale de Lausanne (EPFL)**  
+**Moodle:** [https://go.epfl.ch/COM-430](https://go.epfl.ch/COM-430)
