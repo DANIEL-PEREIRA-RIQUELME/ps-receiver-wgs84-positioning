@@ -7,11 +7,8 @@ clock biases and relativistic drift, applies Sagnac Earth rotation compensation,
 solves the non-linear pseudorange equations via Gauss-Newton multilateration,
 and transforms the receiver coordinates to the WGS-84 geodetic system.
 
-Expected Output:
-    Coordinates of the EPFL campus (Lausanne, Switzerland):
-    Latitude:  46.518294 deg N
-    Longitude:  6.562467 deg E
-    Altitude:  484.44 meters
+Prints the receiver position for the EPFL campus capture (Lausanne, Switzerland),
+the altitude above the WGS-84 ellipsoid and the dilution-of-precision metrics.
 """
 
 import sys

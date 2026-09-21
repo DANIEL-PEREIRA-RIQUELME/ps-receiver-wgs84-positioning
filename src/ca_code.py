@@ -67,26 +67,29 @@ def generate_ca_code(prn: int) -> np.ndarray:
 
 def get_ca_code(prn: int, upsample: bool = False) -> np.ndarray:
     """
-    Retrieve C/A code for a satellite, with optional upsampling to sampling rate.
+    Retrieve the C/A code of a satellite, optionally upsampled to the sampling rate.
 
-    :param prn: Satellite PRN number (1 to 32, or 0-indexed integer if from matrix).
-    :param upsample: If True, upsamples the code by SAMPLES_PER_CHIP (4x).
-    :return: 1D numpy array with the C/A code.
+    The pre-generated matrix ``data/CAcodes.mat`` is used when present (row
+    ``prn - 1`` holds PRN ``prn``); otherwise the code is generated with the LFSR.
+
+    :param prn: Satellite PRN number (1 to 32).
+    :param upsample: If True, repeats each chip SAMPLES_PER_CHIP times.
+    :return: 1D numpy array with the C/A code in {-1, +1}.
     """
     global _CA_CODE_CACHE
 
-    # Load pre-generated CA codes matrix if available
+    if not 1 <= prn <= 32:
+        raise ValueError(f"Invalid PRN: {prn}. Must be between 1 and 32.")
+
     if _CA_CODE_CACHE is None:
         ca_file = DATA_DIR / "CAcodes.mat"
         if ca_file.exists():
-            data = sio.loadmat(str(ca_file))
-            _CA_CODE_CACHE = data['satCAcodes']
+            _CA_CODE_CACHE = sio.loadmat(str(ca_file))['satCAcodes']
 
-    if _CA_CODE_CACHE is not None and prn < _CA_CODE_CACHE.shape[0]:
-        c = _CA_CODE_CACHE[prn, :].astype(float)
+    if _CA_CODE_CACHE is not None:
+        c = _CA_CODE_CACHE[prn - 1, :].astype(float)
     else:
-        actual_prn = prn if prn in PRN_G2_TAPS else prn + 1
-        c = generate_ca_code(actual_prn).astype(float)
+        c = generate_ca_code(prn).astype(float)
 
     if upsample:
         c = np.kron(c, np.ones(SAMPLES_PER_CHIP))

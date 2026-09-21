@@ -8,7 +8,7 @@
 
 An autonomous **GPS L1 C/A Software-Defined Radio (SDR) receiver, navigation message decoder, and 3D positioning engine** implemented in Python. Developed at **École Polytechnique Fédérale de Lausanne (EPFL)** as part of the *COM-430: Modern digital communications: a hands-on approach* curriculum (Instructor: Dr. Nicolae Chiurtu).
 
-The receiver processes raw baseband I/Q antenna samples captured from a USRP SDR front-end at $f_{\mathrm{L1}} = 1575.42\text{ MHz}$ ($f_s = 4.092\text{ MHz}$), executing the complete signal processing chain from satellite acquisition to sub-meter WGS-84 geodetic multilateration.
+The receiver processes raw baseband I/Q antenna samples captured from a USRP SDR front-end at $f_{\mathrm{L1}} = 1575.42\text{ MHz}$ ($f_s = 4.092\text{ MHz}$), executing the signal processing chain from satellite acquisition to WGS-84 geodetic multilateration. With only six satellites and a PDOP of about 6, the fix is accurate to tens of metres, not to the sub-metre level of a commercial receiver.
 
 ---
 
@@ -244,10 +244,10 @@ The receiver was evaluated against real RF baseband samples recorded at the **EP
 
 | Satellite PRN | Coarse Doppler ($f_d$) | Fine Doppler ($f_d$) | Code Phase ($\tau$) | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| **PRN 29** | -2800 Hz | -2730.00 Hz | 890 samples | Acquired & Decoded (Parity OK) |
-| **PRN 04** | +800 Hz | +810.00 Hz | 4001 samples | Acquired & Decoded (Parity OK) |
-| **PRN 26** | +1700 Hz | +1730.00 Hz | 280 samples | Acquired & Decoded (Parity OK) |
-| **PRN 21** | +1300 Hz | +1190.00 Hz | 3346 samples | Acquired & Decoded (Parity OK) |
+| **PRN 29** | -2800 Hz | -2740.00 Hz | 890 samples | Acquired & Decoded (Parity OK) |
+| **PRN 04** | +800 Hz | +800.00 Hz | 4001 samples | Acquired & Decoded (Parity OK) |
+| **PRN 26** | +1700 Hz | +1720.00 Hz | 280 samples | Acquired & Decoded (Parity OK) |
+| **PRN 21** | +1300 Hz | +1180.00 Hz | 3346 samples | Acquired & Decoded (Parity OK) |
 | **PRN 25** | -3600 Hz | -3600.00 Hz | 3536 samples | Acquired & Decoded (Parity OK) |
 | **PRN 31** | -1800 Hz | -1800.00 Hz | 3082 samples | Acquired & Decoded (Parity OK) |
 
@@ -258,6 +258,8 @@ The receiver was evaluated against real RF baseband samples recorded at the **EP
 ```text
 .
 ├── README.md                      # Technical documentation and system architecture
+├── LICENSE                        # MIT (code only)
+├── requirements.txt               # Python dependencies
 ├── main_full_pipeline.py          # End-to-end master runner (Acquisition -> PVT)
 ├── main_pvt_positioning.py        # 3D WGS-84 multilateration positioning solver
 ├── main_ephemeris_decoding.py     # Navigation frame, parity, and orbit extraction
@@ -318,13 +320,13 @@ The receiver was evaluated against real RF baseband samples recorded at the **EP
 - NumPy, SciPy, Matplotlib, h5py.
 
 ```bash
-pip install numpy scipy matplotlib h5py
+pip install -r requirements.txt
 ```
 
 ### Execution
 
-#### 1. End-to-End Master Pipeline
-Executes satellite tracking, telemetry extraction, and 3D positioning:
+#### 1. Decoding and Positioning Pipeline
+Decodes the navigation messages and computes the receiver position from the recorded bitstreams:
 ```bash
 python3 main_full_pipeline.py
 ```
@@ -342,7 +344,7 @@ python3 main_ephemeris_decoding.py
 ```
 
 #### 4. Satellite Signal Acquisition
-Scans all 32 PRN Gold codes on raw RF antenna capture (`data/01.mat`):
+Scans all 32 PRN Gold codes on the raw RF capture (`data/01.mat`) and demodulates the first navigation bits of the six strongest satellites (written to `output/`):
 ```bash
 python3 main_acquisition.py
 ```
@@ -362,68 +364,18 @@ All theoretical foundations, derivations, and specifications are organized in `d
 
 ## Academic Context: COM-430
 
-This project was developed within the official curriculum of the master's course **COM-430: Modern digital communications: a hands-on approach** at **École Polytechnique Fédérale de Lausanne (EPFL)**, taught by **Dr. Nicolae Chiurtu**.
+This receiver was built for the master's course **COM-430: Modern digital communications: a hands-on approach** at EPFL (Dr. Nicolae Chiurtu; [course page](https://go.epfl.ch/COM-430)). The course covers OFDM, MIMO, fading channels and CDMA in GPS, with hands-on work on software-defined radio. The GPS project comprises four stages: signal synchronization, bit decoding, ephemeris and pseudorange computation, and positioning.
 
-### Course Specifications (EPFL Course Booklet)
+The handouts, slides, exams and the IS-GPS-200D specification under `docs/` belong to their respective owners (EPFL and the US government) and are included as reference material only; the MIT license below covers the code in this repository.
 
-| Attribute | Specification |
-| :--- | :--- |
-| **Course Code** | **COM-430** |
-| **Course Title** | *Modern digital communications: a hands-on approach* |
-| **Instructor** | Dr. Nicolae Chiurtu |
-| **Institution** | École Polytechnique Fédérale de Lausanne (EPFL) |
-| **Language of Teaching** | English |
-| **Credits** | 8 ECTS |
-| **Semester / Session** | Fall / Winter |
-| **Workload** | 240 hours total (14 weeks: 4 hours weekly — 2h Lecture, 2h Lab) |
-| **Exam** | During the semester (Written and practical midterm & final exam) |
-| **Grading Scheme** | 40% Midterm exam, 60% Final exam |
-| **Teaching Methods** | *Ex cathedra* lectures and small projects |
-| **Expected Activities** | Follow lectures; guided as well as independent work on projects |
-| **Resources** | Lecture notes / Handbook |
-| **Moodle Portal** | [https://go.epfl.ch/COM-430](https://go.epfl.ch/COM-430) |
-| **Remark** | *This course will be last given in fall 2025.* |
+---
 
-### Target Cursus & Study Programs
+## Limitations
 
-| Study Program | Semester | Type |
-| :--- | :--- | :--- |
-| **Communication Systems Minor** | H | Optional (Opt.) |
-| **Computer Science** | MA1, MA3 | Mandatory (Obl.) |
-| **Cybersecurity** | MA1, MA3 | Optional (Opt.) |
-| **SC Master EPFL** | MA1, MA3 | Mandatory (Obl.) |
-
-### Summary
-This course complements the theoretical knowledge learned in Principles of Digital Communications (PDC) with more advanced topics such as OFDM, MIMO, fading channels, and GPS positioning. This knowledge is put into practice with hands-on exercises based on MATLAB or Python (at choice) and on a software-defined radio platform.
-
-### Syllabus & Course Content
-1. **Software Radio:** Key concepts.
-2. **Signal Processing Chain:** MATLAB/Python implementation of the signal processing chain to the level of detail taught in *Principles of Digital Communications* (PDC: COM-302).
-3. **Channel Modeling:** Estimation and equalization.
-4. **Wireless SDR Testbed:** Implementation of a basic wireless communication system using a software-defined radio testbed.
-5. **Fading and Diversity:** Multipath propagation, Rayleigh fading, and diversity techniques.
-6. **OFDM and MIMO:** Theory and implementation.
-7. **CDMA in GPS:** CDMA in the context of a GPS system.
-8. **GPS Signal Decoding & Positioning:** Decoding of a GPS signal and positioning.
-
-- **Keywords:** Wireless, OFDM, Diversity, Coding, GPS, CDMA, MMSE, Rayleigh fading, software-defined radio, channel estimation.
-
-### Learning Prerequisites
-- **Required Courses:** COM-302 Principles of Digital Communications (PDC) or equivalent.
-- **Important Concepts:** Solid understanding of linear algebra and probability as well as real and complex analysis.
-
-### Learning Outcomes
-By the end of the course, the student must be able to:
-- Design and implement an advanced digital communication system (data rate, spectral bandwidth, energy requirements, error probability, implementation complexity).
-- Model physical properties of wired and wireless communication channels.
-- Implement various parts of a "physical-layer" digital communication system.
-- Understand what software-defined radio is all about.
-
-### Teaching & Assessment Methods
-- **Teaching Methods:** *Ex cathedra* lectures and small projects.
-- **Expected Student Activities:** Follow lectures; guided as well as independent work on projects.
-- **Assessment Methods:** Written and practical midterm and final exam during the semester (40% midterm exam, 60% final exam).
-- **Resources:** Notes/Handbook: Lecture notes. Moodle link: [https://go.epfl.ch/COM-430](https://go.epfl.ch/COM-430).
+- **Decoding uses pre-computed bitstreams.** `main_acquisition.py` demodulates only the first 100 bits per satellite, which is too short for a subframe set; the ephemeris stage reads the longer `bits*-long.mat` files bundled in `data/`.
+- **Geometry is poor.** PDOP is 6.3, and the position solution uses the four satellites with the smallest residuals out of six.
+- **No ionospheric or tropospheric correction** is applied.
+- The bundled ground truth is only the campus location; there is no error statistic against a reference receiver.
 
 ---
 
@@ -431,7 +383,4 @@ By the end of the course, the student must be able to:
 
 - **Daniel Pereira Riquelme** — *Implementation, DSP Algorithms & System Architecture*
 
-**Course:** *COM-430: Modern digital communications: a hands-on approach*  
-**Instructor:** Dr. Nicolae Chiurtu  
-**Institution:** School of Computer and Communication Sciences (IC), **École Polytechnique Fédérale de Lausanne (EPFL)**  
-**Moodle:** [https://go.epfl.ch/COM-430](https://go.epfl.ch/COM-430)
+Code released under the [MIT License](LICENSE).

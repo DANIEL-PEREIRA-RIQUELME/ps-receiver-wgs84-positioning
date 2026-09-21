@@ -16,7 +16,7 @@ import scipy.io as sio
 # Ensure src package is in Python path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from src.config import DATA_DIR
+from src.config import DATA_DIR, PROJECT_ROOT
 from src.acquisition import acquire_visible_satellites
 from src.tracking import track_and_demodulate
 
@@ -26,10 +26,12 @@ def main():
     print("  GPS SDR Receiver: Signal Acquisition & Tracking")
     print("=" * 65)
 
+    output_dir = PROJECT_ROOT / "output"
+    output_dir.mkdir(exist_ok=True)
     raw_signal_file = DATA_DIR / "01.mat"
     if not raw_signal_file.exists():
-        print(f"Error: Raw signal file {raw_signal_file} not found.")
-        return
+        print(f"Error: raw signal file {raw_signal_file} not found.")
+        return 1
 
     t0 = time.perf_counter()
 
@@ -49,8 +51,8 @@ def main():
         if bits.size > 0:
             print(f"      First 20 bits: {bits[:20]}")
 
-            # Save short bits capture
-            sio.savemat(str(DATA_DIR / f"bits{prn:02d}-short.mat"), {
+            # Save the short bit capture (data/ is left untouched)
+            sio.savemat(str(output_dir / f"bits{prn:02d}-short.mat"), {
                 'decodedBits': bits,
                 'taus': bit_taus
             })
@@ -60,6 +62,8 @@ def main():
     print(f"Acquisition and Demodulation completed in {elapsed:.2f} seconds.")
     print("=" * 65)
 
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

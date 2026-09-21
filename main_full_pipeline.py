@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 """
-GPS Receiver: End-to-End Master Pipeline Runner
-================================================
-Executes the full GPS SDR receiver chain:
-1. Signal Acquisition: 2D Doppler and code-phase grid search over 32 PRNs
-2. Signal Tracking: Dynamic carrier and code tracking, coherent bit integration
-3. Telemetry Decoding: Subframe alignment, Hamming parity check, ephemeris extraction
-4. 3D Positioning: Orbit propagation, Sagnac correction, Gauss-Newton WGS-84 solver
+GPS Receiver: Decoding and Positioning Pipeline
+===============================================
+Runs the navigation-message decoding and positioning stages on the recorded data:
 
-Target Destination: EPFL Campus, Lausanne, Switzerland (46.518° N, 6.562° E).
+1. Navigation decoding: preamble sync, parity check and ephemeris extraction from
+   the demodulated bitstreams in ``data/bits*-long.mat``.
+2. Positioning: orbit propagation, clock and Sagnac corrections and the
+   Gauss-Newton WGS-84 solver.
+
+Signal acquisition and tracking of the raw I/Q capture is a separate step
+(``main_acquisition.py``), because demodulating 30 s of data takes minutes.
 """
-
 import sys
 import time
 from pathlib import Path
@@ -18,21 +19,20 @@ from pathlib import Path
 # Ensure src package is in Python path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from main_ephemeris_decoding import main as decode_navigation_data
 from src.pvt_solver import solve_receiver_position
 
 
 def main():
     print("=" * 70)
-    print("  GPS SDR Receiver: Complete End-to-End Autonomous Pipeline")
+    print("  GPS SDR Receiver: Decoding and Positioning Pipeline")
     print("=" * 70)
 
     total_t0 = time.perf_counter()
 
-    # Step 1: Ephemeris & Pseudorange Decoding Summary
-    print("\n[Step 1/2] Loading and validating satellite telemetry (PRN 4, 21, 25, 26, 29, 31)...")
-    print("  [✓] Preamble (0x8B) frame synchronization verified.")
-    print("  [✓] Extended Hamming (32, 26) word parity verified.")
-    print("  [✓] Keplerian orbital parameters and clock corrections loaded.")
+    # Step 1: decode the navigation messages (writes data/correct_sats.mat)
+    print("\n[Step 1/2] Decoding navigation messages...")
+    decode_navigation_data()
 
     # Step 2: 3D Positioning Solver
     print("\n[Step 2/2] Solving satellite orbits and receiver position via Gauss-Newton...")

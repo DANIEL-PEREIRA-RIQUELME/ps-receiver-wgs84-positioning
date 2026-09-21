@@ -18,7 +18,7 @@ def coarse_estimate(sat_prn: int, doppler_step: float = 500.0) -> Tuple[float, i
     """
     Perform 2D parallel search over Doppler and delay grid for a given satellite PRN.
 
-    :param sat_prn: Satellite PRN number (1 to 32, or 0-indexed integer).
+    :param sat_prn: Satellite PRN number (1 to 32).
     :param doppler_step: Frequency grid step in Hz (default: 500 Hz).
     :return: (doppler_estim, tau_estim, peak_metric) where:
         - doppler_estim: coarse Doppler shift estimate in Hz.
