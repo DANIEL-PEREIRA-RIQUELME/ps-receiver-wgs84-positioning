@@ -27,9 +27,8 @@ The receiver processes raw baseband I/Q antenna samples captured from a USRP SDR
 6. [Repository Structure](#repository-structure)
 7. [Getting Started](#getting-started)
 8. [Documentation and Course Materials](#documentation-and-course-materials)
-9. [Academic Context: COM-430](#academic-context-com-430)
-10. [Limitations](#limitations)
-11. [Authors and Acknowledgments](#authors-and-acknowledgments)
+9. [Limitations](#limitations)
+10. [Authors and Acknowledgments](#authors-and-acknowledgments)
 
 ---
 
@@ -383,12 +382,6 @@ All theoretical foundations, derivations, and specifications are organized in `d
 - **Technical Slides:** [docs/slides/](docs/slides/)
 - **Official Standard:** [IS-GPS-200D (PDF)](docs/specifications/IS-GPS-200D.pdf)
 - **Exam Problems & Solutions:** [docs/exams/](docs/exams/)
-
----
-
-## Academic Context: COM-430
-
-This receiver was built for the master's course **COM-430: Modern digital communications: a hands-on approach** at EPFL (Dr. Nicolae Chiurtu; [course page](https://go.epfl.ch/COM-430)). The course covers OFDM, MIMO, fading channels and CDMA in GPS, with hands-on work on software-defined radio. The GPS project comprises four stages: signal synchronization, bit decoding, ephemeris and pseudorange computation, and positioning.
 
 The handouts, slides, exams and the IS-GPS-200D specification under `docs/` belong to their respective owners (EPFL and the US government) and are included as reference material only; the MIT license below covers the code in this repository.
 
