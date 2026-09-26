@@ -308,23 +308,14 @@ The receiver was evaluated against real RF baseband samples recorded at the **EP
     ├── notes/                     # Handwritten lecture notes
     │   ├── 3EphemeridesAndPseudoranges-part1-2024.pdf
     │   └── 3EphemeridesAndPseudoranges-part2-2024.pdf
-    ├── assignments/               # Course assignment handouts
-    │   ├── gpsSynchronization_assignment.pdf
-    │   ├── gpsDecoding_assignment.pdf
-    │   ├── gpsEphemerides_assignment.pdf
-    │   └── gpsPosition_assignment.pdf
     ├── slides/                    # Technical lecture slides
     │   ├── 1Decoding.pdf
     │   ├── 2BigPicture.pdf
     │   ├── 3EphemeridesAndPseudoranges.pdf
     │   ├── 4OrbitsAndReferenceSystems.pdf
     │   └── 5Positioning.pdf
-    ├── specifications/            # Official technical standard
-    │   └── IS-GPS-200D.pdf
-    └── exams/                     # Midterm exams and solutions
-        ├── Midterm_2021/
-        ├── Midterm_2024/
-        └── Midterm_2025/
+    └── specifications/            # Official technical standard
+        └── IS-GPS-200D.pdf
 ```
 
 ---
@@ -378,12 +369,10 @@ python3 plot_fft_spectrum.py
 
 All theoretical foundations, derivations, and specifications are organized in `docs/`:
 - **Personal Lecture Notes:** [docs/notes/](docs/notes/)
-- **Course Assignments:** [docs/assignments/](docs/assignments/)
 - **Technical Slides:** [docs/slides/](docs/slides/)
 - **Official Standard:** [IS-GPS-200D (PDF)](docs/specifications/IS-GPS-200D.pdf)
-- **Exam Problems & Solutions:** [docs/exams/](docs/exams/)
 
-The handouts, slides, exams and the IS-GPS-200D specification under `docs/` belong to their respective owners (EPFL and the US government) and are included as reference material only; the MIT license below covers the code in this repository.
+The slides and the IS-GPS-200D specification under `docs/` belong to their respective owners (EPFL and the US government) and are included as reference material only; the MIT license below covers the code in this repository.
 
 ---
 
