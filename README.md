@@ -206,17 +206,41 @@ $$
 
 ### Gauss-Newton Multilateration and WGS-84 Conversion
 
-The receiver determines its Cartesian position $\mathbf{x}_r = [x_r, y_r, z_r]^T$ and clock bias $b = c \Delta t_r$ by minimizing the non-linear pseudorange residual system:
+**Pseudorange.** The measured delay $\hat\tau_i$ contains the true travel time plus the receiver clock offset $\delta t_r$, which is the same for every satellite:
 
 $$
-f_i(\mathbf{x}_r, b) = \|\mathbf{x}_{\mathrm{sat}, i} - \mathbf{x}_r\| - (\rho_{c, i} + b) = 0, \quad i = 1, \dots, K
+\rho_i = c\,\hat\tau_i = r_i + c\,\delta t_r, \qquad r_i = \|\mathbf{x}_{\mathrm{sat},i} - \mathbf{x}_r\| = \sqrt{(x_{s,i}-x_r)^2 + (y_{s,i}-y_r)^2 + (z_{s,i}-z_r)^2}
 $$
 
-The system is linearized and solved iteratively via Moore-Penrose pseudo-inverse:
+There are four unknowns, $(x_r, y_r, z_r, \delta t_r)$, so at least four satellites are needed.
+
+**Least squares.** The code uses $b = -c\,\delta t_r$, so each residual is zero for the right solution:
+
+$$
+f_i(\mathbf{x}_r, b) = r_i - (\rho_i + b), \qquad \min_{\mathbf{x}_r,\,b} \sum_{i=1}^{K} f_i^2
+$$
+
+**Gauss-Newton.** Linearise around the current estimate, $\mathbf{f}(\mathbf{x}) \approx \mathbf{f}(\mathbf{x}^{(n)}) + \mathbf{J}\,(\mathbf{x}-\mathbf{x}^{(n)})$, with one row per satellite:
+
+$$
+\mathbf{J}_i = \left[ -\frac{(\mathbf{x}_{\mathrm{sat},i} - \mathbf{x}_r)^T}{r_i} \;\;\; -1 \right]
+$$
+
+The first three entries are minus the unit vector to the satellite. Each step solves the linear least-squares problem $\boldsymbol\delta = -(\mathbf{J}^T\mathbf{J})^{-1}\mathbf{J}^T\mathbf{f} = -\mathbf{J}^{\dagger}\mathbf{f}$:
 
 $$
 \begin{bmatrix} \mathbf{x}_r^{(n+1)} \\\\ b^{(n+1)} \end{bmatrix} = \begin{bmatrix} \mathbf{x}_r^{(n)} \\\\ b^{(n)} \end{bmatrix} - \mathbf{J}^{\dagger} \mathbf{f}(\mathbf{x}_r^{(n)}, b^{(n)})
 $$
+
+It starts at the Earth's centre with $b = 0$ and stops when $\|\boldsymbol\delta\| < 10^{-4}$ m.
+
+**Velocity (not implemented).** The Doppler of each satellite gives a linear system in the receiver velocity $\mathbf{v}_r$:
+
+$$
+f_{D,i} = -\frac{f_{\mathrm{L1}}}{c}\,(\mathbf{v}_{\mathrm{sat},i} - \mathbf{v}_r)\cdot\mathbf{u}_i, \qquad \mathbf{u}_i = \frac{\mathbf{x}_{\mathrm{sat},i} - \mathbf{x}_r}{r_i}
+$$
+
+With a clock-drift term this is again four unknowns, solved with the same $\mathbf{J}$ in a single linear least-squares step.
 
 The resulting Cartesian coordinates $(x_r, y_r, z_r)$ are converted to geodetic coordinates on the **WGS-84 reference ellipsoid** (semi-major axis $a = 6378137.0\text{ m}$, flattening $f = 1/298.257223563$).
 
